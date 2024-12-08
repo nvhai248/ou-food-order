@@ -14,7 +14,7 @@ export const RestApiBase = async (
   };
 
   const config: AxiosRequestConfig = {
-    url: `${SERVER_BASE_URL}/${endPoint}`,
+    url: `${SERVER_BASE_URL}${endPoint}`,
     method: method ? method : "POST",
     data: data,
     params: params,

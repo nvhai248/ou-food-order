@@ -12,10 +12,7 @@ export default function SidebarAvatar() {
   return (
     <div className="flex">
       <Avatar>
-        <AvatarImage
-          src={data?.user?.avatarUrl || defaultAvatar}
-          alt="@shadcn"
-        />
+        <AvatarImage src={data?.user?.avatar || defaultAvatar} alt="@shadcn" />
         <AvatarFallback>Avatar</AvatarFallback>
       </Avatar>
 

@@ -1,4 +1,4 @@
-import { Login, RefreshAccessToken, FetchUserInfo } from "@/core/services/auth";
+import { Login, FetchUserInfo } from "@/core/services/auth";
 import { NEXTAUTH_SECRET } from "@/lib/constants";
 import { NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
@@ -9,61 +9,49 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        identifier: { label: "Identifier", type: "identifier" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        if (!credentials?.email || !credentials?.password) return null;
+        if (!credentials?.identifier || !credentials?.password) return null;
 
-        const { data, errors } = await Login(
-          credentials.email,
-          credentials.password
-        );
+        const data = await Login(credentials.identifier, credentials.password);
 
-        if (data?.login) {
-          return data.login;
+        if (data?.error) {
+          return null;
         }
 
-        if (errors) {
-          throw errors[0];
-        }
-
-        return null;
+        return {
+          id: data.user.documentId,
+          name: data.user.username,
+          email: data.user.email,
+          jwt: data.jwt,
+        };
       },
     }),
   ],
 
   callbacks: {
-    async jwt({ token, account }) {
-      if (account) {
-        token.access_token = account.access_token as string;
-        token.idToken = account.id_token;
-        token.refresh_token = account.refresh_token as string;
-        token.refresh_expires_at =
-          (account.refresh_expires_in as number) * 1000 + Date.now();
-        token.expires_at = (account.expires_at ?? 0) * 1000;
+    async jwt({ token, user }) {
+      if (user) {
+        const temp: any = {
+          ...user,
+        };
+
+        token.jwt = temp?.jwt;
+        token.id = temp.id;
       }
 
-      // Check if the access token is expired and needs to be refreshed
-      if (Date.now() < (token.expires_at ?? 0)) {
-        return token;
-      }
-
-      // If the token has expired, attempt to refresh it
-      return await RefreshAccessToken(token);
+      return token;
     },
 
     async session({ session, token }) {
-      if (token.error) {
-        session.error = token.error;
-        session.user = null;
-        return session;
-      }
+      session.jwt = token.jwt ?? null;
 
       try {
-        const userData = await FetchUserInfo(token.access_token as string);
+        const userData = await FetchUserInfo(token.jwt as string);
         session.user = userData ?? null;
-        session.access_token = token.access_token;
+        session.jwt = token.jwt;
       } catch (err) {
         console.error("Error fetching profile:", err);
         session.error = "SessionFetchError";

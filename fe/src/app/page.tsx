@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -16,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,23 +22,69 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ShowToast } from "@/components/show-toast";
+import { signIn, useSession } from "next-auth/react";
+import { useLoading } from "@/providers/loading";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const FormSchema = z.object({
-  username: z.string().min(2, {
+  identifier: z.string().min(2, {
     message: "Username must be at least 2 characters.",
+  }),
+  password: z.string().min(1, {
+    message: "Please enter the password.",
   }),
 });
 
 export default function Page() {
+  const { setLoading }: any = useLoading();
+  const { data, status } = useSession();
+  const router = useRouter();
+
+  // Effect to handle loading state and redirect
+  useEffect(() => {
+    if (status === "loading") {
+      setLoading(true);
+    } else {
+      setLoading(true);
+
+      const timeout = setTimeout(() => {
+        if (data?.user) {
+          router.push("/order");
+        }
+        setLoading(false);
+      }, 300);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [status, data, router, setLoading]);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: "",
+      identifier: "",
+      password: "",
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    ShowToast("Fail. Something went wrong!", true);
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    setLoading(true);
+
+    const result = await signIn("credentials", {
+      identifier: data.identifier,
+      password: data.password,
+      redirect: false,
+    });
+
+    console.log(result);
+
+    if (result?.error) {
+      ShowToast("Login fail, Try again!", true);
+    } else {
+      window.location.href = "/order";
+    }
+
+    setLoading(false);
   }
 
   return (
@@ -48,8 +92,10 @@ export default function Page() {
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 max-w-80">
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Card Title</CardTitle>
-            <CardDescription>Card Description</CardDescription>
+            <CardTitle className="text-center text-3xl">Login</CardTitle>
+            <CardDescription>
+              Please login first and you can order late 🐖
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -59,27 +105,40 @@ export default function Page() {
               >
                 <FormField
                   control={form.control}
-                  name="username"
+                  name="identifier"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="shadcn" {...field} />
+                        <Input
+                          placeholder="Enter your username or email..."
+                          {...field}
+                        />
                       </FormControl>
-                      <FormDescription>
-                        This is your public display name.
-                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit">Submit</Button>
+
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button className="w-full" type="submit">
+                  Login
+                </Button>
               </form>
             </Form>
           </CardContent>
-          <CardFooter>
-            <p>Card Footer</p>
-          </CardFooter>
         </Card>
       </div>
     </div>
