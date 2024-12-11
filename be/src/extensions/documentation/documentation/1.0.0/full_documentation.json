@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2024-12-11T09:15:23.573Z"
+    "x-generation-date": "2024-12-11T16:00:03.862Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -3015,9 +3015,6 @@
         ],
         "properties": {
           "data": {
-            "required": [
-              "created_by_id"
-            ],
             "type": "object",
             "properties": {
               "name": {
@@ -3044,7 +3041,7 @@
                   "example": "string or id"
                 }
               },
-              "created_by_id": {
+              "owner": {
                 "oneOf": [
                   {
                     "type": "integer"
@@ -3113,9 +3110,6 @@
       },
       "Batch": {
         "type": "object",
-        "required": [
-          "created_by_id"
-        ],
         "properties": {
           "id": {
             "type": "number"
@@ -4268,7 +4262,7 @@
                         }
                       }
                     },
-                    "created_by_id": {
+                    "owner": {
                       "type": "object",
                       "properties": {
                         "id": {
@@ -4386,7 +4380,7 @@
               }
             }
           },
-          "created_by_id": {
+          "owner": {
             "type": "object",
             "properties": {
               "id": {
@@ -5852,7 +5846,7 @@
                         }
                       }
                     },
-                    "created_by_id": {
+                    "owner": {
                       "type": "object",
                       "properties": {
                         "id": {
@@ -7229,7 +7223,7 @@
                             }
                           }
                         },
-                        "created_by_id": {
+                        "owner": {
                           "type": "object",
                           "properties": {
                             "id": {
