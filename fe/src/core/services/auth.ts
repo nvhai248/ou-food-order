@@ -1,4 +1,3 @@
-import { JWT } from "next-auth/jwt";
 import { RestApiBase } from "../configs/axios";
 
 export async function FetchUserInfo(jwt: string) {

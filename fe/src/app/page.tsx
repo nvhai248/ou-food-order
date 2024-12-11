@@ -50,7 +50,7 @@ export default function Page() {
 
       const timeout = setTimeout(() => {
         if (data?.user) {
-          router.push("/order");
+          router.push("/batch");
         }
         setLoading(false);
       }, 300);

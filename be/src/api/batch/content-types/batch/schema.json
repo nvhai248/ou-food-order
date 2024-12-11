@@ -16,16 +16,19 @@
     },
     "state": {
       "type": "enumeration",
-      "enum": [
-        "open",
-        "close"
-      ]
+      "enum": ["open", "close"]
     },
     "orders": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::order.order",
       "mappedBy": "batch"
+    },
+    "created_by_id": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "required": true
     }
   }
 }

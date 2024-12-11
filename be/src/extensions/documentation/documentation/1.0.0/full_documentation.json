@@ -14,7 +14,7 @@
       "name": "Apache 2.0",
       "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "x-generation-date": "2024-12-08T03:11:32.059Z"
+    "x-generation-date": "2024-12-11T09:15:23.573Z"
   },
   "x-strapi-config": {
     "plugins": [
@@ -3015,6 +3015,9 @@
         ],
         "properties": {
           "data": {
+            "required": [
+              "created_by_id"
+            ],
             "type": "object",
             "properties": {
               "name": {
@@ -3040,6 +3043,17 @@
                   ],
                   "example": "string or id"
                 }
+              },
+              "created_by_id": {
+                "oneOf": [
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ],
+                "example": "string or id"
               },
               "locale": {
                 "type": "string"
@@ -3099,6 +3113,9 @@
       },
       "Batch": {
         "type": "object",
+        "required": [
+          "created_by_id"
+        ],
         "properties": {
           "id": {
             "type": "number"
@@ -4251,6 +4268,17 @@
                         }
                       }
                     },
+                    "created_by_id": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "documentId": {
+                          "type": "string"
+                        }
+                      }
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -4355,6 +4383,17 @@
                     }
                   }
                 }
+              }
+            }
+          },
+          "created_by_id": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "number"
+              },
+              "documentId": {
+                "type": "string"
               }
             }
           },
@@ -5813,6 +5852,17 @@
                         }
                       }
                     },
+                    "created_by_id": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "documentId": {
+                          "type": "string"
+                        }
+                      }
+                    },
                     "createdAt": {
                       "type": "string",
                       "format": "date-time"
@@ -7176,6 +7226,17 @@
                               "documentId": {
                                 "type": "string"
                               }
+                            }
+                          }
+                        },
+                        "created_by_id": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "number"
+                            },
+                            "documentId": {
+                              "type": "string"
                             }
                           }
                         },

@@ -1,12 +1,7 @@
 import {
-  Calendar,
-  PawPrintIcon,
-  SyringeIcon,
-  Search,
-  Settings,
-  Users2,
   ChevronUp,
-  User2,
+  ListOrderedIcon,
+  LibraryBigIcon,
 } from "lucide-react";
 
 import {
@@ -26,7 +21,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { Button } from "./ui/button";
 import SidebarAvatar from "./sidebar/avatar";
 import LogoutSidebar from "./sidebar/logout";
 
@@ -35,12 +29,12 @@ const items = [
   {
     title: "Order",
     url: "/order",
-    icon: PawPrintIcon,
+    icon: ListOrderedIcon,
   },
   {
     title: "Batch",
     url: "/batch",
-    icon: SyringeIcon,
+    icon: LibraryBigIcon,
   },
 ];
 
@@ -49,7 +43,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>PETS ADMIN</SidebarGroupLabel>
+          <SidebarGroupLabel>OU NASHTECH FOOD ORDER</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

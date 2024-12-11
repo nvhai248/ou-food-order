@@ -1,3 +1,5 @@
+import path from "path";
+
 export default [
   "strapi::logger",
   "strapi::errors",
@@ -35,4 +37,5 @@ export default [
       },
     },
   },
+  "global::set-created-by",
 ];

@@ -7,5 +7,5 @@ export type User = {
   blocked: boolean;
   user_id: string | null;
   name: string | null;
-  avatar: string | null;
+  avatar: any | null;
 };

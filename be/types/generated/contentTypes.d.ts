@@ -14,6 +14,11 @@ export interface ApiBatchBatch extends Struct.CollectionTypeSchema {
     name: Schema.Attribute.String;
     state: Schema.Attribute.Enumeration<['open', 'close']>;
     orders: Schema.Attribute.Relation<'oneToMany', 'api::order.order'>;
+    created_by_id: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    > &
+      Schema.Attribute.Required;
     createdAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     publishedAt: Schema.Attribute.DateTime;
