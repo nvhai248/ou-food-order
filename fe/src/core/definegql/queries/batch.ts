@@ -10,3 +10,27 @@ export const QueryBatches = gql`
     }
   }
 `;
+
+export const QueryBatchByDocumentId = gql`
+  query Batch($documentId: ID!) {
+    batch(documentId: $documentId) {
+      name
+      orders {
+        note
+        quantity
+        createdAt
+        food {
+          name
+          price
+        }
+        documentId
+        user {
+          name
+          avatar {
+            url
+          }
+        }
+      }
+    }
+  }
+`;

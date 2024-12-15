@@ -25,8 +25,7 @@
     "orders": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::order.order",
-      "mappedBy": "batch"
+      "target": "api::order.order"
     },
     "owner": {
       "type": "relation",

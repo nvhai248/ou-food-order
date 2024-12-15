@@ -422,7 +422,6 @@ export interface ApiFoodFood extends Struct.CollectionTypeSchema {
     location: Schema.Attribute.String;
     name: Schema.Attribute.String;
     note: Schema.Attribute.Text;
-    orders: Schema.Attribute.Relation<'oneToMany', 'api::order.order'>;
     price: Schema.Attribute.BigInteger;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
@@ -443,11 +442,11 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    batch: Schema.Attribute.Relation<'manyToOne', 'api::batch.batch'>;
+    batch: Schema.Attribute.Relation<'oneToOne', 'api::batch.batch'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    food: Schema.Attribute.Relation<'manyToOne', 'api::food.food'>;
+    food: Schema.Attribute.Relation<'oneToOne', 'api::food.food'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
       Schema.Attribute.Private;

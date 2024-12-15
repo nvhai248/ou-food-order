@@ -3,7 +3,7 @@
 import { ReusePagination } from "@/components/reuse-paging";
 import ReuseTable from "@/components/reuse-table";
 import { GetBatchesService } from "@/core/services";
-import { BasePagingResponse, Column } from "@/core/type";
+import { Column } from "@/core/type";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -21,8 +21,6 @@ interface BatchesProps {
 export default function Batches({ searchParams }: BatchesProps) {
   const { data: session } = useSession();
   const [data, setData] = useState<any>();
-  const [selectedPet, setSelectedPet] = useState<any | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const route = useRouter();
 
   const columns: Column[] = [

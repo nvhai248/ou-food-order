@@ -1,11 +1,11 @@
-"use client";
+import GetBatch from "./get-batch";
 
-import { useSession } from "next-auth/react";
+export default async function DetailProduct({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { id } = await params;
 
-export default function OrderPage() {
-  const { data } = useSession();
-
-  console.log(data?.user?.avatar?.url);
-
-  return <h1> Em iu </h1>;
+  return <GetBatch id={id} />
 }
