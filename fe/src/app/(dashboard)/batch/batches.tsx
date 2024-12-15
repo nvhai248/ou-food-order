@@ -5,6 +5,7 @@ import ReuseTable from "@/components/reuse-table";
 import { GetBatchesService } from "@/core/services";
 import { BasePagingResponse, Column } from "@/core/type";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 interface BatchesProps {
@@ -22,6 +23,7 @@ export default function Batches({ searchParams }: BatchesProps) {
   const [data, setData] = useState<any>();
   const [selectedPet, setSelectedPet] = useState<any | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const route = useRouter();
 
   const columns: Column[] = [
     {
@@ -32,17 +34,26 @@ export default function Batches({ searchParams }: BatchesProps) {
     },
     { header: "Name", accessor: "name", sortField: "name", width: "20%" },
     { header: "State", accessor: "state", sortField: "state", width: "20%" },
-    { header: "Created At", accessor: "createdAt", sortField: "createdAt", width: "20%" },
+    {
+      header: "Created At",
+      accessor: "createdAt",
+      sortField: "createdAt",
+      width: "20%",
+    },
   ];
 
   // Fetch pets data using useEffect
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response: any = await GetBatchesService(session?.jwt as string, {
-          page: searchParams.pageNumber || 1,
-          pageSize: searchParams.pageSize || 10,
-        });
+        const response: any = await GetBatchesService(
+          session?.jwt as string,
+          {
+            page: searchParams.pageNumber || 1,
+            pageSize: searchParams.pageSize || 10,
+          },
+          searchParams.sortBy ? [searchParams.sortBy] : []
+        );
 
         console.log(response);
 
@@ -57,9 +68,8 @@ export default function Batches({ searchParams }: BatchesProps) {
     }
   }, [session, searchParams]);
 
-  const handleRowClick = (pet: any) => {
-    setSelectedPet(pet);
-    setIsDialogOpen(true);
+  const handleRowClick = (batch: any) => {
+    route.push(`/batch/${batch.documentId}`);
   };
 
   return (

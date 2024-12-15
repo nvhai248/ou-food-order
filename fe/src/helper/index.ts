@@ -9,5 +9,19 @@ const options: Intl.DateTimeFormatOptions = {
   hour12: false, // Boolean
 };
 
-const formatter = new Intl.DateTimeFormat("en-US", options);
-export default formatter;
+export const formatter = new Intl.DateTimeFormat("en-US", options);
+
+export function FormatDate(dateString: string) {
+  try {
+    const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+      return "Invalid Date";
+    }
+
+    return formatter.format(date);
+  } catch (error) {
+    console.error("Date formatting error:", error);
+    return "Invalid Date";
+  }
+}

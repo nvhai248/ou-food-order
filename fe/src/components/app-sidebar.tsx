@@ -1,8 +1,4 @@
-import {
-  ChevronUp,
-  ListOrderedIcon,
-  LibraryBigIcon,
-} from "lucide-react";
+import { ChevronUp, LibraryBigIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -26,11 +22,6 @@ import LogoutSidebar from "./sidebar/logout";
 
 // Menu items.
 const items = [
-  {
-    title: "Order",
-    url: "/order",
-    icon: ListOrderedIcon,
-  },
   {
     title: "Batch",
     url: "/batch",

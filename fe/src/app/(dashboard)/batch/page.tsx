@@ -1,13 +1,13 @@
 import Spinner from "@/components/ui/spinner";
 import { Suspense } from "react";
 import Batches from "./batches";
+import CreateBatchButton from "./create";
 
 export default async function PetsPage(props: {
   searchParams?: Promise<{
     pageSize?: string;
     pageNumber?: string;
-    typeId?: string;
-    classifyId?: string;
+    refreshed?: string;
     query?: string;
     sortBy?: string;
     sortOrder?: string;
@@ -19,6 +19,7 @@ export default async function PetsPage(props: {
   const input = {
     pageSize: parseInt(searchParams?.pageSize ?? "10"),
     pageNumber: parseInt(searchParams?.pageNumber ?? "1"),
+    refreshed: searchParams?.refreshed,
     query: searchParams?.query,
     sortBy: searchParams?.sortBy ?? "name",
     sortOrder: searchParams?.sortOrder ?? "asc",
@@ -30,7 +31,8 @@ export default async function PetsPage(props: {
         <div className="w-full h-fit bg-gray-100 p-4 rounded-lg shadow">
           <div className="flex justify-between mb-4">
             <h3 className="text-xl font-semibold">Batches</h3>
-            <h1>OK</h1>
+            {/* Create new pet type dialog */}
+            <CreateBatchButton />
           </div>
 
           <Batches searchParams={input} />

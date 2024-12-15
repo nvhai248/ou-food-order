@@ -12,10 +12,10 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useRouter, useSearchParams } from "next/navigation";
-import formatter from "@/helper";
 import Spinner from "./ui/spinner";
 import { Column } from "@/core/type";
 import { SORT_ORDER } from "@/core/constants";
+import { FormatDate, formatter } from "@/helper";
 
 interface ReusableTableProps<T> {
   columns: Column[];
@@ -121,7 +121,7 @@ const ReuseTable = <T extends Record<string, any>>({
                 <Badge className="bg-red-500">{item.state}</Badge>
               )
             ) : column.accessor === "createdAt" ? (
-              formatter.format(item.createdAt)
+              FormatDate(item.createdAt)
             ) : (
               getNestedValue(item, column.accessor)
             )}

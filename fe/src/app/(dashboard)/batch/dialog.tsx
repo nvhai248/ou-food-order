@@ -37,7 +37,7 @@ const formSchema = z.object({
   name: z.string().min(1, { message: "You must enter pet type!" }),
 });
 
-export default function CustomDialogPetType({
+export default function CustomDialogBatchType({
   title,
   description,
   buttonTitle,
