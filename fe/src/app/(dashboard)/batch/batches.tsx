@@ -1,9 +1,12 @@
 "use client";
 
+import Refreshed from "@/components/refresh";
 import { ReusePagination } from "@/components/reuse-paging";
 import ReuseTable from "@/components/reuse-table";
-import { GetBatchesService } from "@/core/services";
-import { Column } from "@/core/type";
+import { ShowToast } from "@/components/show-toast";
+import { GetBatchesService, UpdateBatchService } from "@/core/services";
+import { Action, Column } from "@/core/type";
+import { DoorClosedIcon, Trash2Icon } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -39,6 +42,12 @@ export default function Batches({ searchParams }: BatchesProps) {
       sortField: "createdAt",
       width: "20%",
     },
+    {
+      header: "Action",
+      accessor: "action",
+      sortField: "action",
+      width: "20%",
+    },
   ];
 
   // Fetch pets data using useEffect
@@ -69,6 +78,36 @@ export default function Batches({ searchParams }: BatchesProps) {
     route.push(`/batch/${batch.documentId}`);
   };
 
+  const handleCloseBatch = async (batch: any) => {
+    try {
+      await UpdateBatchService(
+        {
+          state: "close",
+        },
+        session?.jwt as string,
+        batch.documentId
+      );
+
+      ShowToast("Close success!", false);
+      Refreshed();
+    } catch (error) {
+      ShowToast("Something went wrong!", true);
+    }
+  };
+
+  const actions: Action[] = [
+    {
+      title: "Close",
+      className: "btn bg-yellow-500",
+      handler: handleCloseBatch,
+    },
+    {
+      title: "Delete",
+      className: "btn bg-red-500",
+      handler: handleCloseBatch,
+    },
+  ];
+
   return (
     <div>
       <div className="w-full max-h-[37rem] rounded-md overflow-y-auto scrollbar-custom">
@@ -78,6 +117,7 @@ export default function Batches({ searchParams }: BatchesProps) {
           onRowClick={handleRowClick}
           sortBy={searchParams.sortBy}
           sortOrder={searchParams.sortOrder}
+          actions={actions}
         />
       </div>
 

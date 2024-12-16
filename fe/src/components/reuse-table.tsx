@@ -13,9 +13,10 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useRouter, useSearchParams } from "next/navigation";
 import Spinner from "./ui/spinner";
-import { Column } from "@/core/type";
+import { Action, Column } from "@/core/type";
 import { SORT_ORDER } from "@/core/constants";
 import { FormatDate, formatter } from "@/helper";
+import { Button } from "./ui/button";
 
 interface ReusableTableProps<T> {
   columns: Column[];
@@ -25,7 +26,7 @@ interface ReusableTableProps<T> {
   sortOrder?: string;
   fontSize?: number;
   isLoading?: boolean;
-  actions?: any;
+  actions?: Action[];
 }
 
 const ReuseTable = <T extends Record<string, any>>({
@@ -129,7 +130,22 @@ const ReuseTable = <T extends Record<string, any>>({
               case "updatedAt":
                 return FormatDate(item.updatedAt);
               case "action":
-                return actions?.map((action: any) => action);
+                return (
+                  <div className="flex gap-4">
+                    {actions?.map((action, index) => (
+                      <Button
+                        key={index}
+                        className={action.className}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          action.handler;
+                        }}
+                      >
+                        {action.title}
+                      </Button>
+                    ))}
+                  </div>
+                );
               default:
                 return getNestedValue(item, column.accessor);
             }

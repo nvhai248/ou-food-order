@@ -1,7 +1,7 @@
 import { MyApolloClient } from "@/lib/apolo";
 import { GraphQLError } from "graphql";
 import { QueryBatchByDocumentId, QueryBatches } from "../definegql/queries";
-import { BasePagingRequest } from "../type";
+import { BasePagingRequest, Batch } from "../type";
 import { RestApiBase } from "../configs/axios";
 
 export async function GetBatchesService(
@@ -100,5 +100,29 @@ export async function GetBatchByDocumentIdService(
         ),
       ],
     };
+  }
+}
+
+export async function UpdateBatchService(
+  batch: Batch,
+  jwt: string,
+  id: string
+) {
+  try {
+    const result = await RestApiBase(
+      {
+        data: {
+          name: batch.name,
+          state: batch.state,
+        },
+      },
+      `/api/batches/${id}`,
+      "PUT",
+      jwt
+    );
+
+    return result.data;
+  } catch (error) {
+    return error;
   }
 }

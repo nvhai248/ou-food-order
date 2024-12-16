@@ -6,25 +6,18 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { ShowToast } from "@/components/show-toast";
 import { CreateNewBatchService } from "@/core/services";
-import { useRouter, useSearchParams } from "next/navigation";
+import Refreshed from "@/components/refresh";
 
 export default function CreateBatchButton() {
   const [openCreatePetDialog, setOpenCreatePetDialog] = useState(false);
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const { data } = useSession();
 
-  const handleRefresh = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("refreshed", Date.now().toString());
-    router.replace(`?${params.toString()}`);
-  };
+  const { data } = useSession();
 
   const createNewBatch = async (newName: string) => {
     try {
       await CreateNewBatchService(newName, data?.jwt as string);
       setOpenCreatePetDialog(false);
-      handleRefresh();
+      Refreshed();
 
       ShowToast("Pet type has been created");
     } catch (error: any) {
