@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { CheckCircle, CircleXIcon } from "lucide-react";
-import formatter from "@/helper";
+import { formatter } from "@/helper";
 
 export const ShowToast = (message: string, isError = false) => {
   toast(message, {

@@ -3,5 +3,4 @@ export type CreateOrderType = {
   food: string;
   quantity: number;
   batch: string;
-  locale: "vi";
 };

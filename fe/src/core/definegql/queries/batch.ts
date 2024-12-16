@@ -24,13 +24,29 @@ export const QueryBatchByDocumentId = gql`
           price
         }
         documentId
-        user {
-          name
-          avatar {
-            url
-          }
-        }
       }
     }
   }
 `;
+
+// query Batch($documentId: ID!) {
+//   batch(documentId: $documentId) {
+//     name
+//     orders {
+//       note
+//       quantity
+//       createdAt
+//       food {
+//         name
+//         price
+//       }
+//       documentId
+//       user {
+//         name
+//         avatar {
+//           url
+//         }
+//       }
+//     }
+//   }
+// }

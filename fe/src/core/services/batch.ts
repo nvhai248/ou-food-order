@@ -18,6 +18,7 @@ export async function GetBatchesService(
           Authorization: `Bearer ${accessToken}`,
         },
       },
+      fetchPolicy: "no-cache",
     });
 
     if (errors) {
@@ -50,7 +51,6 @@ export async function CreateNewBatchService(name: string, jwt: string) {
         data: {
           name: name,
           state: "open",
-          locale: "vi",
         },
       },
       "/api/batches",
@@ -77,6 +77,7 @@ export async function GetBatchByDocumentIdService(
           Authorization: `Bearer ${accessToken}`,
         },
       },
+      fetchPolicy: "no-cache",
     });
 
     if (errors) {

@@ -442,7 +442,7 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     draftAndPublish: true;
   };
   attributes: {
-    batch: Schema.Attribute.Relation<'oneToOne', 'api::batch.batch'>;
+    batch: Schema.Attribute.Relation<'manyToOne', 'api::batch.batch'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

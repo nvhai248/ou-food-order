@@ -68,12 +68,6 @@
     "user_id": {
       "type": "string"
     },
-    "orders": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::order.order",
-      "mappedBy": "user"
-    },
     "avatar": {
       "type": "media",
       "multiple": false,
@@ -87,6 +81,12 @@
     },
     "name": {
       "type": "string"
+    },
+    "orders": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::order.order",
+      "mappedBy": "user"
     }
   }
 }

@@ -35,6 +35,8 @@ import { useEffect, useState } from "react";
 import { ShowToast } from "@/components/show-toast";
 import { useSession } from "next-auth/react";
 import { GetFoodsServices } from "@/core/services";
+import { Textarea } from "@/components/ui/textarea";
+import { CreateOrderType } from "@/core/type";
 
 interface Props {
   title: string;
@@ -83,8 +85,8 @@ export default function CustomDialogOrderClassify({
     const fetchPetTypes = async () => {
       if (data?.jwt) {
         try {
-          const foods = await GetFoodsServices(data.jwt);
-          setFoods(foods);
+          const response = await GetFoodsServices(data.jwt);
+          setFoods(response.data);
         } catch (error) {
           console.error(error);
           ShowToast("Failed to fetch pet types", true);
@@ -106,7 +108,13 @@ export default function CustomDialogOrderClassify({
     if (id) {
       action(values, id);
     } else {
-      action(values);
+      const newData: CreateOrderType = {
+        note: values.note,
+        food: values.foodId,
+        quantity: values.quantity,
+        batch: batchId as string,
+      };
+      action(newData);
     }
   };
 
@@ -127,64 +135,73 @@ export default function CustomDialogOrderClassify({
                 <FormItem>
                   <FormLabel>Note</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter note" {...field} />
+                    <Textarea placeholder="Enter note..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="quantity..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="flex gap-4">
+              <FormField
+                control={form.control}
+                name="quantity"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantity</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="quantity..."
+                        {...field}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        value={field.value ?? ""}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="foodId"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel className="mt-5">Pet Type</FormLabel>
-                  <FormControl>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline">
-                          {foods.find((f: any) => f.documentId === field.value)
-                            ?.name || "Select Pet Type"}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-56">
-                        <DropdownMenuLabel>Select a Pet Type</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuRadioGroup
-                          value={field.value}
-                          onValueChange={(value) => field.onChange(value)}
-                        >
-                          {foods.map((food: any) => (
-                            <DropdownMenuRadioItem
-                              key={food.documentId}
-                              value={food.documentId}
-                            >
-                              {food.name}
-                            </DropdownMenuRadioItem>
-                          ))}
-                        </DropdownMenuRadioGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="foodId"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel className="mt-2.5">Pet Type</FormLabel>
+                    <FormControl>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline">
+                            {foods.find(
+                              (f: any) => f.documentId === field.value
+                            )?.name || "Select Pet Type"}
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                          <DropdownMenuLabel>Select a Food</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuRadioGroup
+                            value={field.value}
+                            onValueChange={(value) => field.onChange(value)}
+                          >
+                            {foods.map((food: any) => (
+                              <DropdownMenuRadioItem
+                                key={food.documentId}
+                                value={food.documentId}
+                              >
+                                {food.name}
+                              </DropdownMenuRadioItem>
+                            ))}
+                          </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <DialogFooter>
               <Button type="submit">Submit</Button>
             </DialogFooter>

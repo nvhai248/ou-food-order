@@ -17,7 +17,7 @@ export default function CreateBatchButton() {
   const handleRefresh = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("refreshed", Date.now().toString());
-    router.push(`?${params.toString()}`);
+    router.replace(`?${params.toString()}`);
   };
 
   const createNewBatch = async (newName: string) => {
@@ -25,6 +25,7 @@ export default function CreateBatchButton() {
       await CreateNewBatchService(newName, data?.jwt as string);
       setOpenCreatePetDialog(false);
       handleRefresh();
+
       ShowToast("Pet type has been created");
     } catch (error: any) {
       console.log(error.message);

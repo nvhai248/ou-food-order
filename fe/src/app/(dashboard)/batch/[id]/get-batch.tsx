@@ -1,49 +1,77 @@
 "use client";
-import { GetBatchByDocumentIdService } from "@/core/services";
+import {
+  CreateNewOrderService,
+  GetBatchByDocumentIdService,
+} from "@/core/services";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Orders from "./orders";
-import CreateOrderButton from "./create-order";
+import { BatchDetailHeader } from "./header";
+import CustomDialogOrderClassify from "./create-order-dialog";
+import { Button } from "@/components/ui/button";
+import { CreateOrderType } from "@/core/type";
+import { ShowToast } from "@/components/show-toast";
 
 interface Props {
-  id?: string;
+  id: string;
 }
 
 export default function GetBatch({ id }: Props) {
   const { data: session } = useSession();
   const [data, setData] = useState<any>();
+  const [refetch, setRefetch] = useState<number>();
+  const [openCreateOrderDialog, setOpenCreateOrderDialog] = useState(false);
 
-  // Fetch pets data using useEffect
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response: any = await GetBatchByDocumentIdService(
-          session?.jwt as string,
-          id as string
-        );
+  const fetchData = async (token: string) => {
+    try {
+      const response: any = await GetBatchByDocumentIdService(
+        token,
+        id as string
+      );
 
-        console.log(response);
-
-        setData(response.data.batch);
-      } catch (error) {
-        console.log("Error fetching pets data:", error);
-      }
-    };
-
-    if (session?.jwt && id) {
-      fetchData();
+      setData(response.data.batch);
+    } catch (error) {
+      console.log("Error fetching pets data:", error);
     }
-  }, [session, id]);
+  };
 
-  console.log(data);
+  useEffect(() => {
+    if (session?.jwt && id) {
+      fetchData(session.jwt);
+    }
+  }, [session, id, refetch]);
+
+  const createNewOrder = async (data: CreateOrderType) => {
+    try {
+      await CreateNewOrderService(data, session?.jwt as string);
+      setRefetch(Date.now());
+      setOpenCreateOrderDialog(false);
+      ShowToast("Order has been created!");
+    } catch (error: any) {
+      console.log(error.message);
+      ShowToast("Fail. Something went wrong!", true);
+    }
+  };
 
   return (
     <div className="w-[100%] flex gap-4 p-4">
       <div className="w-full h-fit bg-gray-100 p-4 rounded-lg shadow">
+        <BatchDetailHeader
+          title={data ? data.name : ""}
+          id={data ? data.documentId : ""}
+        />
         <div className="flex justify-between mb-4">
           <h3 className="text-xl font-semibold">{data ? data.name : ""}</h3>
-          {/* Create new pet type dialog */}
-          <CreateOrderButton />
+
+          <CustomDialogOrderClassify
+            open={openCreateOrderDialog}
+            setOpen={setOpenCreateOrderDialog}
+            buttonTitle={<Button variant="outline">Create New</Button>}
+            title="Create new order"
+            description="Input all the detail about the order."
+            action={createNewOrder}
+            batchId={id}
+          />
         </div>
 
         <Orders data={data ? (data.orders ? data.orders : []) : []} />

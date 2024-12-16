@@ -25,6 +25,7 @@ interface ReusableTableProps<T> {
   sortOrder?: string;
   fontSize?: number;
   isLoading?: boolean;
+  actions?: any;
 }
 
 const ReuseTable = <T extends Record<string, any>>({
@@ -35,6 +36,7 @@ const ReuseTable = <T extends Record<string, any>>({
   sortOrder,
   fontSize,
   isLoading = false,
+  actions,
 }: ReusableTableProps<T>) => {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -48,11 +50,12 @@ const ReuseTable = <T extends Record<string, any>>({
     if (
       typeof result === "string" &&
       !isNaN(Date.parse(result)) &&
-      path != "name"
+      !path.includes("name")
     ) {
       const date = new Date(result);
       return formatter.format(date);
     }
+
     return result ?? "-";
   };
 
@@ -112,21 +115,30 @@ const ReuseTable = <T extends Record<string, any>>({
         onClick={() => onRowClick(item)}
         className="cursor-pointer hover:bg-gray-100 transition-colors"
       >
-        {columns.map((column) => (
-          <TableCell key={column.accessor}>
-            {column.accessor === "state" ? (
-              item.state === "open" ? (
-                <Badge className="bg-green-500">{item.state}</Badge>
-              ) : (
-                <Badge className="bg-red-500">{item.state}</Badge>
-              )
-            ) : column.accessor === "createdAt" ? (
-              FormatDate(item.createdAt)
-            ) : (
-              getNestedValue(item, column.accessor)
-            )}
-          </TableCell>
-        ))}
+        {columns.map((column) => {
+          const renderCellContent = () => {
+            switch (column.accessor) {
+              case "state":
+                return item.state === "open" ? (
+                  <Badge className="bg-green-500">{item.state}</Badge>
+                ) : (
+                  <Badge className="bg-red-500">{item.state}</Badge>
+                );
+              case "createdAt":
+                return FormatDate(item.createdAt);
+              case "updatedAt":
+                return FormatDate(item.updatedAt);
+              case "action":
+                return actions?.map((action: any) => action);
+              default:
+                return getNestedValue(item, column.accessor);
+            }
+          };
+
+          return (
+            <TableCell key={column.accessor}>{renderCellContent()}</TableCell>
+          );
+        })}
       </TableRow>
     ));
   }, [data, columns, isLoading]);

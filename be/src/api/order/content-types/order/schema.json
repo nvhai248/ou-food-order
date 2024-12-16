@@ -15,11 +15,6 @@
     "note": {
       "type": "text"
     },
-    "food": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::food.food"
-    },
     "user": {
       "type": "relation",
       "relation": "manyToOne",
@@ -31,8 +26,14 @@
     },
     "batch": {
       "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::batch.batch",
+      "inversedBy": "orders"
+    },
+    "food": {
+      "type": "relation",
       "relation": "oneToOne",
-      "target": "api::batch.batch"
+      "target": "api::food.food"
     }
   }
 }

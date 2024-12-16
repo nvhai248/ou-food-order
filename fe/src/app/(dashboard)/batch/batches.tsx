@@ -12,6 +12,7 @@ interface BatchesProps {
   searchParams: {
     pageSize?: number;
     pageNumber?: number;
+    refreshed?: string;
     query?: string;
     sortBy?: string;
     sortOrder?: string;
@@ -52,8 +53,6 @@ export default function Batches({ searchParams }: BatchesProps) {
           },
           searchParams.sortBy ? [searchParams.sortBy] : []
         );
-
-        console.log(response);
 
         setData(response.data.batches);
       } catch (error) {
