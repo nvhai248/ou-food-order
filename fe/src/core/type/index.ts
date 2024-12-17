@@ -22,7 +22,6 @@ export type BasePagingResponse<T> = {
 };
 
 export type Action = {
-  title: any;
-  className?: string;
-  handler?: (item: any) => void;
+  key: string;
+  component: any;
 };

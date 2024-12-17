@@ -126,3 +126,13 @@ export async function UpdateBatchService(
     return error;
   }
 }
+
+export async function DeleteBatchService(jwt: string, id: string) {
+  try {
+    const result = await RestApiBase({}, `/api/batches/${id}`, "DELETE", jwt);
+
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+}

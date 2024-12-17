@@ -6,10 +6,13 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { ShowToast } from "@/components/show-toast";
 import { CreateNewBatchService } from "@/core/services";
-import Refreshed from "@/components/refresh";
+import { Refreshed } from "@/helper";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function CreateBatchButton() {
   const [openCreatePetDialog, setOpenCreatePetDialog] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   const { data } = useSession();
 
@@ -17,7 +20,7 @@ export default function CreateBatchButton() {
     try {
       await CreateNewBatchService(newName, data?.jwt as string);
       setOpenCreatePetDialog(false);
-      Refreshed();
+      Refreshed(searchParams, router);
 
       ShowToast("Pet type has been created");
     } catch (error: any) {
@@ -31,8 +34,8 @@ export default function CreateBatchButton() {
       open={openCreatePetDialog}
       setOpen={setOpenCreatePetDialog}
       buttonTitle={<Button variant="outline">Create New</Button>}
-      title="Create new pet classify"
-      description="Input the pet classify name and save after done."
+      title="Create new batch"
+      description="Enter Batch name and then every one can order."
       action={createNewBatch}
     />
   );

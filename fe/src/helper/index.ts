@@ -25,3 +25,9 @@ export function FormatDate(dateString: string) {
     return "Invalid Date";
   }
 }
+
+export const Refreshed = (searchParams: URLSearchParams, router: any) => {
+  const params = new URLSearchParams(searchParams.toString());
+  params.set("refreshed", Date.now().toString());
+  router.replace(`?${params.toString()}`);
+};

@@ -29,6 +29,19 @@ interface ReusableTableProps<T> {
   actions?: Action[];
 }
 
+const isVisibleAction = (data: any, keyAction: string) => {
+  if (!data) return false;
+
+  if (
+    (data.state === "close" && keyAction === "close") ||
+    (data.state === "open" && keyAction === "open")
+  ) {
+    return false;
+  }
+
+  return true;
+};
+
 const ReuseTable = <T extends Record<string, any>>({
   columns,
   data,
@@ -113,7 +126,6 @@ const ReuseTable = <T extends Record<string, any>>({
     return data.map((item, index) => (
       <TableRow
         key={index}
-        onClick={() => onRowClick(item)}
         className="cursor-pointer hover:bg-gray-100 transition-colors"
       >
         {columns.map((column) => {
@@ -129,21 +141,14 @@ const ReuseTable = <T extends Record<string, any>>({
                 return FormatDate(item.createdAt);
               case "updatedAt":
                 return FormatDate(item.updatedAt);
-              case "action":
+              case "actions":
                 return (
                   <div className="flex gap-4">
-                    {actions?.map((action, index) => (
-                      <Button
-                        key={index}
-                        className={action.className}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          action.handler;
-                        }}
-                      >
-                        {action.title}
-                      </Button>
-                    ))}
+                    {actions?.map((action) =>
+                      action.component && isVisibleAction(item, action.key) ? (
+                        <div key={action.key}>{action.component(item)}</div>
+                      ) : null
+                    )}
                   </div>
                 );
               default:
@@ -152,7 +157,14 @@ const ReuseTable = <T extends Record<string, any>>({
           };
 
           return (
-            <TableCell key={column.accessor}>{renderCellContent()}</TableCell>
+            <TableCell
+              onClick={() => {
+                column.accessor !== "actions" && onRowClick(item);
+              }}
+              key={column.accessor}
+            >
+              {renderCellContent()}
+            </TableCell>
           );
         })}
       </TableRow>

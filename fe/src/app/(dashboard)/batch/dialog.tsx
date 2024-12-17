@@ -81,9 +81,9 @@ export default function CustomDialogBatchType({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Pet Type Name</FormLabel>
+                  <FormLabel>Batch Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter pet type name" {...field} />
+                    <Input placeholder="Batch name..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

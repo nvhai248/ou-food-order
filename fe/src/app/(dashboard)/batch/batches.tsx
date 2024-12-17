@@ -1,14 +1,19 @@
 "use client";
 
-import Refreshed from "@/components/refresh";
 import { ReusePagination } from "@/components/reuse-paging";
 import ReuseTable from "@/components/reuse-table";
 import { ShowToast } from "@/components/show-toast";
-import { GetBatchesService, UpdateBatchService } from "@/core/services";
+import { Button } from "@/components/ui/button";
+import {
+  DeleteBatchService,
+  GetBatchesService,
+  UpdateBatchService,
+} from "@/core/services";
 import { Action, Column } from "@/core/type";
+import { Refreshed } from "@/helper";
 import { DoorClosedIcon, Trash2Icon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 interface BatchesProps {
@@ -26,6 +31,7 @@ export default function Batches({ searchParams }: BatchesProps) {
   const { data: session } = useSession();
   const [data, setData] = useState<any>();
   const route = useRouter();
+  const sParams = useSearchParams();
 
   const columns: Column[] = [
     {
@@ -43,9 +49,9 @@ export default function Batches({ searchParams }: BatchesProps) {
       width: "20%",
     },
     {
-      header: "Action",
-      accessor: "action",
-      sortField: "action",
+      header: "Actions",
+      accessor: "actions",
+      sortField: "actions",
       width: "20%",
     },
   ];
@@ -89,7 +95,35 @@ export default function Batches({ searchParams }: BatchesProps) {
       );
 
       ShowToast("Close success!", false);
-      Refreshed();
+      Refreshed(sParams, route);
+    } catch (error) {
+      ShowToast("Something went wrong!", true);
+    }
+  };
+
+  const handleOpenBatch = async (batch: any) => {
+    try {
+      await UpdateBatchService(
+        {
+          state: "open",
+        },
+        session?.jwt as string,
+        batch.documentId
+      );
+
+      ShowToast("Open success!", false);
+      Refreshed(sParams, route);
+    } catch (error) {
+      ShowToast("Something went wrong!", true);
+    }
+  };
+
+  const handleDeleteBatch = async (batch: any) => {
+    try {
+      await DeleteBatchService(session?.jwt as string, batch.documentId);
+
+      ShowToast("Delete success!", false);
+      Refreshed(sParams, route);
     } catch (error) {
       ShowToast("Something went wrong!", true);
     }
@@ -97,14 +131,37 @@ export default function Batches({ searchParams }: BatchesProps) {
 
   const actions: Action[] = [
     {
-      title: "Close",
-      className: "btn bg-yellow-500",
-      handler: handleCloseBatch,
+      key: "close",
+      component: (item: any) => (
+        <Button
+          className="btn bg-yellow-500"
+          onClick={() => handleCloseBatch(item)}
+        >
+          Close
+        </Button>
+      ),
     },
     {
-      title: "Delete",
-      className: "btn bg-red-500",
-      handler: handleCloseBatch,
+      key: "open",
+      component: (item: any) => (
+        <Button
+          className="btn bg-green-500"
+          onClick={() => handleOpenBatch(item)}
+        >
+          Open
+        </Button>
+      ),
+    },
+    {
+      key: "delete",
+      component: (item: any) => (
+        <Button
+          className="btn bg-red-500"
+          onClick={() => handleDeleteBatch(item)}
+        >
+          Delete
+        </Button>
+      ),
     },
   ];
 
