@@ -79,7 +79,7 @@ export default function Page() {
     if (result?.error) {
       ShowToast("Login fail, Try again!", true);
     } else {
-      window.location.href = "/order";
+      window.location.href = "/batch";
     }
 
     setLoading(false);
