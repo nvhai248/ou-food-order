@@ -1,5 +1,10 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import CustomConfirmDialog from "@/components/confirm-dialog";
 import { ReusePagination } from "@/components/reuse-paging";
 import ReuseTable from "@/components/reuse-table";
 import { ShowToast } from "@/components/show-toast";
@@ -11,10 +16,6 @@ import {
 } from "@/core/services";
 import { Action, Column } from "@/core/type";
 import { Refreshed } from "@/helper";
-import { DoorClosedIcon, Trash2Icon } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
 
 interface BatchesProps {
   searchParams: {
@@ -56,22 +57,16 @@ export default function Batches({ searchParams }: BatchesProps) {
     },
   ];
 
-  // Fetch pets data using useEffect
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response: any = await GetBatchesService(
-          session?.jwt as string,
-          {
-            page: searchParams.pageNumber || 1,
-            pageSize: searchParams.pageSize || 10,
-          },
-          searchParams.sortBy ? [searchParams.sortBy] : []
-        );
-
+        const response: any = await GetBatchesService(session?.jwt as string, {
+          page: searchParams.pageNumber || 1,
+          pageSize: searchParams.pageSize || 10,
+        });
         setData(response.data.batches);
       } catch (error) {
-        console.log("Error fetching pets data:", error);
+        console.error("Error fetching batches:", error);
       }
     };
 
@@ -87,13 +82,10 @@ export default function Batches({ searchParams }: BatchesProps) {
   const handleCloseBatch = async (batch: any) => {
     try {
       await UpdateBatchService(
-        {
-          state: "close",
-        },
+        { state: "close" },
         session?.jwt as string,
         batch.documentId
       );
-
       ShowToast("Close success!", false);
       Refreshed(sParams, route);
     } catch (error) {
@@ -104,13 +96,10 @@ export default function Batches({ searchParams }: BatchesProps) {
   const handleOpenBatch = async (batch: any) => {
     try {
       await UpdateBatchService(
-        {
-          state: "open",
-        },
+        { state: "open" },
         session?.jwt as string,
         batch.documentId
       );
-
       ShowToast("Open success!", false);
       Refreshed(sParams, route);
     } catch (error) {
@@ -121,7 +110,6 @@ export default function Batches({ searchParams }: BatchesProps) {
   const handleDeleteBatch = async (batch: any) => {
     try {
       await DeleteBatchService(session?.jwt as string, batch.documentId);
-
       ShowToast("Delete success!", false);
       Refreshed(sParams, route);
     } catch (error) {
@@ -133,34 +121,37 @@ export default function Batches({ searchParams }: BatchesProps) {
     {
       key: "close",
       component: (item: any) => (
-        <Button
-          className="btn bg-yellow-500"
-          onClick={() => handleCloseBatch(item)}
-        >
-          Close
-        </Button>
+        <CustomConfirmDialog
+          confirmActionText="Close"
+          title={`Close batch ${item.name}`}
+          description="Are you sure you want to close this batch?"
+          buttonComponent={<Button className="btn bg-yellow-500">Close</Button>}
+          action={() => handleCloseBatch(item)}
+        />
       ),
     },
     {
       key: "open",
       component: (item: any) => (
-        <Button
-          className="btn bg-green-500"
-          onClick={() => handleOpenBatch(item)}
-        >
-          Open
-        </Button>
+        <CustomConfirmDialog
+          confirmActionText="Open"
+          title={`Open batch ${item.name}`}
+          description="Are you sure you want to open this batch?"
+          buttonComponent={<Button className="btn bg-green-500">Open</Button>}
+          action={() => handleOpenBatch(item)}
+        />
       ),
     },
     {
       key: "delete",
       component: (item: any) => (
-        <Button
-          className="btn bg-red-500"
-          onClick={() => handleDeleteBatch(item)}
-        >
-          Delete
-        </Button>
+        <CustomConfirmDialog
+          confirmActionText="Delete"
+          title={`Delete batch ${item.name}`}
+          description="Are you sure you want to delete this batch?"
+          buttonComponent={<Button className="btn bg-red-500">Delete</Button>}
+          action={() => handleDeleteBatch(item)}
+        />
       ),
     },
   ];
@@ -182,14 +173,6 @@ export default function Batches({ searchParams }: BatchesProps) {
         pageNumber={searchParams.pageNumber}
         totalPages={data?.totalPages}
       />
-
-      {/* {selectedPet && (
-        <DetailPetDialog
-          pet={selectedPet}
-          open={isDialogOpen}
-          setOpen={setIsDialogOpen}
-        />
-      )} */}
     </div>
   );
 }

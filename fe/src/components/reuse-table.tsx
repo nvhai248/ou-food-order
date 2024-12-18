@@ -64,7 +64,7 @@ const ReuseTable = <T extends Record<string, any>>({
     if (
       typeof result === "string" &&
       !isNaN(Date.parse(result)) &&
-      !path.includes("name")
+      !path.includes("name") && !path.includes("note") 
     ) {
       const date = new Date(result);
       return formatter.format(date);

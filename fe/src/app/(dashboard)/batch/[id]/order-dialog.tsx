@@ -43,12 +43,11 @@ interface Props {
   description: string;
   buttonTitle: React.ReactNode;
   action: any;
-  open: boolean;
   id?: string;
+  foodId?: string;
   batchId?: string;
   quantity?: number;
   note?: string;
-  setOpen: (isOpen: boolean) => void;
 }
 
 const formSchema = z.object({
@@ -57,26 +56,26 @@ const formSchema = z.object({
   foodId: z.string().min(1, { message: "You must choose a food" }),
 });
 
-export default function CustomDialogOrderClassify({
+export default function CustomDialogOrder({
   title,
   description,
   buttonTitle,
   action,
+  foodId,
   id,
   note,
   batchId,
   quantity,
-  open,
-  setOpen,
 }: Props) {
   const [foods, setFoods] = useState<any>([]);
+  const [open, setOpen] = useState(false);
   const { data } = useSession();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       note: note || "",
-      foodId: "",
+      foodId: foodId || "",
       quantity: quantity || 0,
     },
   });
@@ -97,16 +96,23 @@ export default function CustomDialogOrderClassify({
   }, [data?.jwt]);
 
   useEffect(() => {
+    // Reset form values when foods are updated or initial props change
     form.reset({
       note: note || "",
-      foodId: foods[0]?.documentId as string | "",
-      quantity: 0,
+      foodId: foodId || (foods.length > 0 ? foods[0].documentId : ""),
+      quantity: quantity || 0,
     });
-  }, [note, foods, form]);
+  }, [note, foodId, foods, quantity, form]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (id) {
-      action(values, id);
+      const newData: CreateOrderType = {
+        note: values.note,
+        food: values.foodId,
+        quantity: values.quantity,
+        batch: batchId as string,
+      };
+      action(newData, id);
     } else {
       const newData: CreateOrderType = {
         note: values.note,
@@ -116,6 +122,8 @@ export default function CustomDialogOrderClassify({
       };
       action(newData);
     }
+
+    setOpen(false);
   };
 
   return (
@@ -168,31 +176,35 @@ export default function CustomDialogOrderClassify({
                 name="foodId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="mt-2.5">Pet Type</FormLabel>
+                    <FormLabel className="mt-2.5">Food</FormLabel>
                     <FormControl>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="outline">
                             {foods.find(
                               (f: any) => f.documentId === field.value
-                            )?.name || "Select Pet Type"}
+                            )?.name || "Select Food"}
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56">
-                          <DropdownMenuLabel>Select a Food</DropdownMenuLabel>
+                          <DropdownMenuLabel>Select Food</DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuRadioGroup
                             value={field.value}
                             onValueChange={(value) => field.onChange(value)}
                           >
-                            {foods.map((food: any) => (
-                              <DropdownMenuRadioItem
-                                key={food.documentId}
-                                value={food.documentId}
-                              >
-                                {food.name}
-                              </DropdownMenuRadioItem>
-                            ))}
+                            {foods.length > 0 ? (
+                              foods.map((food: any) => (
+                                <DropdownMenuRadioItem
+                                  key={food.documentId}
+                                  value={food.documentId}
+                                >
+                                  {food.name}
+                                </DropdownMenuRadioItem>
+                              ))
+                            ) : (
+                              <div>No foods available</div>
+                            )}
                           </DropdownMenuRadioGroup>
                         </DropdownMenuContent>
                       </DropdownMenu>

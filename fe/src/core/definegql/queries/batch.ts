@@ -20,6 +20,7 @@ export const QueryBatchByDocumentId = gql`
         quantity
         createdAt
         food {
+          documentId
           name
           price
         }

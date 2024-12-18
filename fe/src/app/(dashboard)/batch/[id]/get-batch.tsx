@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Orders from "./orders";
 import { BatchDetailHeader } from "./header";
-import CustomDialogOrderClassify from "./create-order-dialog";
+import CustomDialogOrderClassify from "./order-dialog";
 import { Button } from "@/components/ui/button";
 import { CreateOrderType } from "@/core/type";
 import { ShowToast } from "@/components/show-toast";
@@ -20,7 +20,6 @@ export default function GetBatch({ id }: Props) {
   const { data: session } = useSession();
   const [data, setData] = useState<any>();
   const [refetch, setRefetch] = useState<number>();
-  const [openCreateOrderDialog, setOpenCreateOrderDialog] = useState(false);
 
   const fetchData = async (token: string) => {
     try {
@@ -45,7 +44,6 @@ export default function GetBatch({ id }: Props) {
     try {
       await CreateNewOrderService(data, session?.jwt as string);
       setRefetch(Date.now());
-      setOpenCreateOrderDialog(false);
       ShowToast("Order has been created!");
     } catch (error: any) {
       console.log(error.message);
@@ -64,8 +62,6 @@ export default function GetBatch({ id }: Props) {
           <h3 className="text-xl font-semibold">{data ? data.name : ""}</h3>
 
           <CustomDialogOrderClassify
-            open={openCreateOrderDialog}
-            setOpen={setOpenCreateOrderDialog}
             buttonTitle={<Button variant="outline">Create New</Button>}
             title="Create new order"
             description="Input all the detail about the order."
@@ -74,7 +70,11 @@ export default function GetBatch({ id }: Props) {
           />
         </div>
 
-        <Orders data={data ? (data.orders ? data.orders : []) : []} />
+        <Orders
+          id={data ? data.documentId : ""}
+          data={data ? (data.orders ? data.orders : []) : []}
+          refetch={setRefetch}
+        />
       </div>
     </div>
   );
