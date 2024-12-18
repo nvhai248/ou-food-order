@@ -394,6 +394,7 @@ export interface ApiBatchBatch extends Struct.CollectionTypeSchema {
       'plugin::users-permissions.user'
     >;
     publishedAt: Schema.Attribute.DateTime;
+    shipper: Schema.Attribute.Text;
     state: Schema.Attribute.Enumeration<['open', 'close']>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

@@ -15,6 +15,7 @@ export const QueryBatchByDocumentId = gql`
   query Batch($documentId: ID!) {
     batch(documentId: $documentId) {
       name
+      shipper
       orders {
         note
         quantity

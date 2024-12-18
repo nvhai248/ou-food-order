@@ -76,8 +76,6 @@ export default function Page() {
       redirect: false,
     });
 
-    console.log(result);
-
     if (result?.error) {
       ShowToast("Login fail, Try again!", true);
     } else {

@@ -2,6 +2,7 @@
 import {
   CreateNewOrderService,
   GetBatchByDocumentIdService,
+  UpdateShipperBatchService,
 } from "@/core/services";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -29,8 +30,40 @@ export default function GetBatch({ id }: Props) {
       );
 
       setData(response.data.batch);
+    } catch (error) {}
+  };
+
+  const handleUploadBatch = async (note: string, id: string) => {
+    try {
+      await UpdateShipperBatchService(note, session?.jwt as string, id);
+      ShowToast("Success pick shipper!", false);
     } catch (error) {
-      console.log("Error fetching pets data:", error);
+      ShowToast("Something went wrong!", true);
+    }
+  };
+
+  // Function to automatically pick a shipper based on a note from batch.orders
+  const handleGenerateShipper = async () => {
+    if (!data || !data.orders) {
+      ShowToast("No orders found to generate a shipper!", true);
+      return;
+    }
+
+    try {
+      let index = Date.now() % data.orders.length;
+
+      const shipperNote = data.orders[index].note;
+
+      if (!shipperNote) {
+        ShowToast("No valid shipper note found!", true);
+        return;
+      }
+
+      await handleUploadBatch(shipperNote, id);
+
+      setRefetch(Date.now());
+    } catch (error) {
+      ShowToast("Failed to generate shipper!", true);
     }
   };
 
@@ -75,6 +108,19 @@ export default function GetBatch({ id }: Props) {
           data={data ? (data.orders ? data.orders : []) : []}
           refetch={setRefetch}
         />
+
+        <hr className="mb-4" />
+
+        <div className="flex justify-between">
+          <p>
+            Shipper:{" "}
+            <span>{data && data.shipper ? data.shipper : "No one"}</span>{" "}
+          </p>
+
+          {data && !data.shipper && (
+            <Button onClick={handleGenerateShipper}>Generate shipper</Button>
+          )}
+        </div>
       </div>
     </div>
   );

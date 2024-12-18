@@ -127,6 +127,29 @@ export async function UpdateBatchService(
   }
 }
 
+export async function UpdateShipperBatchService(
+  note: string,
+  jwt: string,
+  id: string
+) {
+  try {
+    const result = await RestApiBase(
+      {
+        data: {
+          shipper: note,
+        },
+      },
+      `/api/batches/${id}`,
+      "PUT",
+      jwt
+    );
+
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+}
+
 export async function DeleteBatchService(jwt: string, id: string) {
   try {
     const result = await RestApiBase({}, `/api/batches/${id}`, "DELETE", jwt);

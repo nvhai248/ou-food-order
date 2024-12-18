@@ -26,7 +26,6 @@ export const RestApiBase = async (
     const response = await axios(config);
     return response;
   } catch (error: any) {
-    console.log("Network or other error", error.message);
     throw error;
   }
 };
