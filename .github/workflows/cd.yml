@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.PAT_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository }}/ou-food-order-admin:latest .
+        run: docker build -t ghcr.io/${{ github.repository }}/ou-food-order-admin:latest ./be
 
       - name: Push Docker image
         run: docker push ghcr.io/${{ github.repository }}/ou-food-order-admin:latest
