@@ -94,19 +94,22 @@ export default function GetBatch({ id }: Props) {
         <div className="flex justify-between mb-4">
           <h3 className="text-xl font-semibold">{data ? data.name : ""}</h3>
 
-          <CustomDialogOrderClassify
-            buttonTitle={<Button variant="outline">Create New</Button>}
-            title="Create new order"
-            description="Input all the detail about the order."
-            action={createNewOrder}
-            batchId={id}
-          />
+          {data && data.state == "open" && (
+            <CustomDialogOrderClassify
+              buttonTitle={<Button variant="outline">Create New</Button>}
+              title="Create new order"
+              description="Input all the detail about the order."
+              action={createNewOrder}
+              batchId={id}
+            />
+          )}
         </div>
 
         <Orders
           id={data ? data.documentId : ""}
           data={data ? (data.orders ? data.orders : []) : []}
           refetch={setRefetch}
+          state={data ? data.state : "close"}
         />
 
         <hr className="mb-4" />

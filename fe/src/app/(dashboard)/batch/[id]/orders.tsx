@@ -15,12 +15,14 @@ interface OrdersProps {
   data: any;
   id: string;
   refetch?: any;
+  state: any;
 }
 
-export default function Orders({ data, id, refetch }: OrdersProps) {
+export default function Orders({ data, id, refetch, state }: OrdersProps) {
   const { data: session } = useSession();
   const route = useRouter();
   const columns: Column[] = [
+    { header: "Note", accessor: "note", sortField: "note", width: "20%" },
     {
       header: "Food",
       accessor: "food.name",
@@ -39,7 +41,7 @@ export default function Orders({ data, id, refetch }: OrdersProps) {
       sortField: "quantity",
       width: "10%",
     },
-    { header: "Note", accessor: "note", sortField: "note", width: "20%" },
+
     {
       header: "Created At",
       accessor: "createdAt",
@@ -74,37 +76,44 @@ export default function Orders({ data, id, refetch }: OrdersProps) {
     }
   };
 
-  const actions: Action[] = [
-    {
-      key: "update",
-      component: (item: any) => (
-        <CustomDialogOrder
-          buttonTitle={<Button className="btn bg-yellow-500">Update</Button>}
-          title={`Update order ${item.note}`}
-          description="Update the detail about the order."
-          note={item.note}
-          quantity={item.quantity}
-          foodId={item.food.documentId}
-          action={handleUpdateOrder}
-          batchId={id}
-          id={item.documentId}
-        />
-      ),
-    },
+  const actions: Action[] =
+    state === "open"
+      ? [
+          {
+            key: "update",
+            component: (item: any) => (
+              <CustomDialogOrder
+                buttonTitle={
+                  <Button className="btn bg-yellow-500">Update</Button>
+                }
+                title={`Update order ${item.note}`}
+                description="Update the detail about the order."
+                note={item.note}
+                quantity={item.quantity}
+                foodId={item.food.documentId}
+                action={handleUpdateOrder}
+                batchId={id}
+                id={item.documentId}
+              />
+            ),
+          },
 
-    {
-      key: "delete",
-      component: (item: any) => (
-        <CustomConfirmDialog
-          confirmActionText="Delete"
-          title={`Delete order ${item.name}`}
-          description="Are you sure you want to delete this order?"
-          buttonComponent={<Button className="btn bg-red-500">Delete</Button>}
-          action={() => handleDeleteOrder(item)}
-        />
-      ),
-    },
-  ];
+          {
+            key: "delete",
+            component: (item: any) => (
+              <CustomConfirmDialog
+                confirmActionText="Delete"
+                title={`Delete order ${item.name}`}
+                description="Are you sure you want to delete this order?"
+                buttonComponent={
+                  <Button className="btn bg-red-500">Delete</Button>
+                }
+                action={() => handleDeleteOrder(item)}
+              />
+            ),
+          },
+        ]
+      : [];
 
   return (
     <div>

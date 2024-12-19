@@ -37,6 +37,7 @@ import { useSession } from "next-auth/react";
 import { GetFoodsServices } from "@/core/services";
 import { Textarea } from "@/components/ui/textarea";
 import { CreateOrderType } from "@/core/type";
+import { FormatCurrency } from "@/helper";
 
 interface Props {
   title: string;
@@ -126,6 +127,10 @@ export default function CustomDialogOrder({
     setOpen(false);
   };
 
+  const ViewFood = (food: any) => {
+    return food ? `${food.name} - ${FormatCurrency(food.price)}` : null;
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{buttonTitle}</DialogTrigger>
@@ -141,7 +146,7 @@ export default function CustomDialogOrder({
               name="note"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Note</FormLabel>
+                  <FormLabel>{`Note (your name for generate):`}</FormLabel>
                   <FormControl>
                     <Textarea placeholder="Enter note..." {...field} />
                   </FormControl>
@@ -181,9 +186,11 @@ export default function CustomDialogOrder({
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="outline">
-                            {foods.find(
-                              (f: any) => f.documentId === field.value
-                            )?.name || "Select Food"}
+                            {ViewFood(
+                              foods.find(
+                                (f: any) => f.documentId === field.value
+                              )
+                            ) || "Select Food"}
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56">
@@ -199,7 +206,7 @@ export default function CustomDialogOrder({
                                   key={food.documentId}
                                   value={food.documentId}
                                 >
-                                  {food.name}
+                                  {ViewFood(food)}
                                 </DropdownMenuRadioItem>
                               ))
                             ) : (

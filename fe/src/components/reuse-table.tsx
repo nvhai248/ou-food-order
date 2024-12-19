@@ -15,7 +15,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Spinner from "./ui/spinner";
 import { Action, Column } from "@/core/type";
 import { SORT_ORDER } from "@/core/constants";
-import { FormatDate, formatter } from "@/helper";
+import {
+  ConvertToNumber,
+  FormatCurrency,
+  FormatDate,
+  formatter,
+} from "@/helper";
 import { Button } from "./ui/button";
 
 interface ReusableTableProps<T> {
@@ -64,10 +69,15 @@ const ReuseTable = <T extends Record<string, any>>({
     if (
       typeof result === "string" &&
       !isNaN(Date.parse(result)) &&
-      !path.includes("name") && !path.includes("note") 
+      !path.includes("name") &&
+      !path.includes("note")
     ) {
       const date = new Date(result);
       return formatter.format(date);
+    }
+
+    if (path.includes("price")) {
+      return FormatCurrency(result);
     }
 
     return result ?? "-";

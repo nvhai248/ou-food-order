@@ -31,3 +31,15 @@ export const Refreshed = (searchParams: URLSearchParams, router: any) => {
   params.set("refreshed", Date.now().toString());
   router.replace(`?${params.toString()}`);
 };
+
+export function ConvertToNumber(text: string): number {
+  const cleanedText = text.replace(/[^0-9]/g, "");
+  return parseInt(cleanedText, 10);
+}
+
+export function FormatCurrency(number: number): string {
+  return `${number.toLocaleString("vi-VI", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })} VND`;
+}
