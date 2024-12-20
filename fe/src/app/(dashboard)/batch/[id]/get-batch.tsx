@@ -94,7 +94,7 @@ export default function GetBatch({ id }: Props) {
         <div className="flex justify-between mb-4">
           <h3 className="text-xl font-semibold">{data ? data.name : ""}</h3>
 
-          {data && data.state == "open" && (
+          {data && data.state == "open" ? (
             <CustomDialogOrderClassify
               buttonTitle={<Button variant="outline">Create New</Button>}
               title="Create new order"
@@ -102,6 +102,8 @@ export default function GetBatch({ id }: Props) {
               action={createNewOrder}
               batchId={id}
             />
+          ) : (
+            <Button disabled>The batch is closed</Button>
           )}
         </div>
 
