@@ -22,7 +22,7 @@ export default function Orders({ data, id, refetch, state }: OrdersProps) {
   const { data: session } = useSession();
   const route = useRouter();
   const columns: Column[] = [
-    { header: "Note", accessor: "note", sortField: "note", width: "20%" },
+    { header: "Note (name)", accessor: "note", sortField: "note", width: "20%" },
     {
       header: "Food",
       accessor: "food.name",

@@ -12,6 +12,7 @@ import CustomDialogOrderClassify from "./order-dialog";
 import { Button } from "@/components/ui/button";
 import { CreateOrderType } from "@/core/type";
 import { ShowToast } from "@/components/show-toast";
+import { FormatCurrency } from "@/helper";
 
 interface Props {
   id: string;
@@ -40,6 +41,19 @@ export default function GetBatch({ id }: Props) {
     } catch (error) {
       ShowToast("Something went wrong!", true);
     }
+  };
+
+  const calculateTotal = (data: any) => {
+    if (!data || !data.orders) {
+      return 0;
+    }
+
+    return FormatCurrency(
+      data.orders.reduce(
+        (acc: any, curr: any) => acc + curr.food.price * curr.quantity,
+        0
+      )
+    );
   };
 
   // Function to automatically pick a shipper based on a note from batch.orders
@@ -115,6 +129,13 @@ export default function GetBatch({ id }: Props) {
         />
 
         <hr className="mb-4" />
+
+        <div className="flex justify-between">
+          <p>Total:</p>
+          <span className="text-2xl text-blue-500">{calculateTotal(data)}</span>{" "}
+        </div>
+
+        <br />
 
         <div className="flex justify-between">
           <p>
