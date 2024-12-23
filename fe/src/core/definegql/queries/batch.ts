@@ -12,12 +12,12 @@ export const QueryBatches = gql`
 `;
 
 export const QueryBatchByDocumentId = gql`
-  query Batch($documentId: ID!) {
+  query Batch($pagination: PaginationArg, $documentId: ID!) {
     batch(documentId: $documentId) {
       name
       shipper
       state
-      orders {
+      orders(pagination: $pagination) {
         note
         quantity
         createdAt

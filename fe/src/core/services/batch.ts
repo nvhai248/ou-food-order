@@ -71,7 +71,13 @@ export async function GetBatchByDocumentIdService(
   try {
     const { data, errors } = await MyApolloClient.query({
       query: QueryBatchByDocumentId,
-      variables: { documentId: documentId },
+      variables: {
+        documentId: documentId,
+        pagination: {
+          pageSize: 100,
+          page: 1,
+        },
+      },
       context: {
         headers: {
           Authorization: `Bearer ${accessToken}`,
