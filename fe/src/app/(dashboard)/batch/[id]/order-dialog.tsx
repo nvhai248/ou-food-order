@@ -193,12 +193,13 @@ export default function CustomDialogOrder({
                             ) || "Select Food"}
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56">
+                        <DropdownMenuContent>
                           <DropdownMenuLabel>Select Food</DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuRadioGroup
                             value={field.value}
                             onValueChange={(value) => field.onChange(value)}
+                            className="max-h-[10rem] overflow-y-auto scrollbar-custom"
                           >
                             {foods.length > 0 ? (
                               foods.map((food: any) => (

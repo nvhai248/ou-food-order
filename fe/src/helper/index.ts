@@ -38,6 +38,9 @@ export function ConvertToNumber(text: string): number {
 }
 
 export function FormatCurrency(number: number): string {
+  if (!number || isNaN(number)) {
+    return "Invalid Number";
+  }
   return `${number.toLocaleString("vi-VI", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
