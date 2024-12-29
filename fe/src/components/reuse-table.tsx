@@ -161,6 +161,8 @@ const ReuseTable = <T extends Record<string, any>>({
                     )}
                   </div>
                 );
+              case "total":
+                return FormatCurrency(item.quantity * item.food.price);
               default:
                 return getNestedValue(item, column.accessor);
             }
